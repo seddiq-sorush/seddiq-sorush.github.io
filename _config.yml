@@ -39,16 +39,16 @@ round-avatar: true
 social-network-links:
   email: "seddiq.sorush@gmail.com"
   facebook: seddiq.sorush
-  github: podcoder
+  github: seddiq-sorush
   twitter: seddiqsorush
   rss: true
-#  reddit: yourname
- linkedin: seddiqsorush
-#  xing: yourname
-#  stackoverflow: "3943160/daattali"
-#  snapchat: deanat78
-#  instagram: deanat78
- youtube: user/podcoder
+  #  reddit: yourname
+  linkedin: seddiqsorush
+  #  xing: yourname
+  #  stackoverflow: "3943160/daattali"
+  #  snapchat: deanat78
+  #  instagram: deanat78
+  youtube: user/podcoder
 #  spotify: yourname
 #  telephone: +14159998888
 #  steam: deanat78
