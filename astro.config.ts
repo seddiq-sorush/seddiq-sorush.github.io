@@ -33,8 +33,8 @@ const whenExternalScripts = (
 
 export default defineConfig({
   output: "static",
-  site: "https://seddiq-sorush.github.io",
-  base: "seddiq-sorush.github.io",
+  // site: "https://seddiq-sorush.github.io",
+  // base: "seddiq-sorush.github.io",
   integrations: [
     tailwind({
       applyBaseStyles: false,
