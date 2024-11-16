@@ -1,0 +1,66 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+import HeroText from '~/components/widgets/HeroText.astro';
+import ContactUs from '~/components/widgets/Contact.astro';
+import Features2 from '~/components/widgets/Features2.astro';
+
+const metadata = {
+  title: 'Contact',
+};
+---
+
+<Layout metadata={metadata}>
+  <!-- HeroText Widget ******************* -->
+
+  <HeroText tagline="Contact" title="Let's Connect!" />
+
+  <ContactUs
+    id="form"
+    title="I'd Love to Hear From You!"
+    subtitle=""
+    inputs={[
+      {
+        type: 'text',
+        name: 'name',
+        label: 'Name',
+      },
+      {
+        type: 'email',
+        name: 'email',
+        label: 'Email',
+      },
+    ]}
+    textarea={{
+      label: 'Message',
+    }}
+    disclaimer={{
+      label:
+        'By submitting this contact form, you acknowledge and agree to the collection of your personal information.',
+    }}
+    description="I'll try my best to responds within 24 business hours."
+  />
+
+  <!-- Features2 Widget ************** -->
+
+  <Features2
+    title="We are here to help!"
+    items={[
+     
+      {
+        title: 'Phone',
+        description: '+1 (619) 631-3529',
+        icon: 'tabler:headset',
+      },
+      {
+        title: 'Email',
+        description: 'contact@podcoder.com',
+        icon: 'tabler:mail',
+      },
+      {
+        title: 'Location',
+        description: 'San Jose, California',
+        icon: 'tabler:map-pin',
+      },
+    ]}
+  />
+</Layout>
