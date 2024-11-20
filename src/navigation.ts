@@ -69,9 +69,9 @@ export const footerData = {
     // { text: 'Privacy Policy', href: getPermalink('/privacy') },
   ],
   socialLinks: [
-    { ariaLabel: "X", icon: "tabler:brand-x", href: "#" },
-    { ariaLabel: "Instagram", icon: "tabler:brand-instagram", href: "#" },
-    { ariaLabel: "Facebook", icon: "tabler:brand-facebook", href: "#" },
+    { ariaLabel: "X", icon: "tabler:brand-x", href: "https://x.com/SeddiqSorush" },
+    { ariaLabel: "Instagram", icon: "tabler:brand-instagram", href: "https://www.instagram.com/podcoder" },
+    { ariaLabel: "Facebook", icon: "tabler:brand-facebook", href: "https://www.facebook.com/seddiq.sorush" },
     { ariaLabel: "RSS", icon: "tabler:rss", href: getAsset("/rss.xml") },
     {
       ariaLabel: "Github",
