@@ -1,45 +1,30 @@
 ---
-import Layout from '~/layouts/PageLayout.astro';
+import Layout from "~/layouts/PageLayout.astro";
 
-import Header from '~/components/widgets/Header.astro';
-import Hero from '~/components/widgets/Hero.astro';
-import Content from '~/components/widgets/Content.astro';
-import CallToAction from '~/components/widgets/CallToAction.astro';
-import Features3 from '~/components/widgets/Features3.astro';
-import Testimonials from '~/components/widgets/Testimonials.astro';
-import Steps from '~/components/widgets/Steps.astro';
-import BlogLatestPosts from '~/components/widgets/BlogLatestPosts.astro';
-import { getPermalink } from '~/utils/permalinks';
-import { inferRemoteSize } from 'astro:assets';
+import Header from "~/components/widgets/Header.astro";
+import Hero from "~/components/widgets/Hero.astro";
+import Content from "~/components/widgets/Content.astro";
+import CallToAction from "~/components/widgets/CallToAction.astro";
+import Features3 from "~/components/widgets/Features3.astro";
+import Testimonials from "~/components/widgets/Testimonials.astro";
+import Steps from "~/components/widgets/Steps.astro";
+import BlogLatestPosts from "~/components/widgets/BlogLatestPosts.astro";
+import { getPermalink } from "~/utils/permalinks";
+// import { inferRemoteSize } from "astro:assets";
 
-import MyPhoto from '~/assets/images/my-photo.png';
+import MyPhoto from "~/assets/images/my-photo.png";
 
+import { experiences } from "~/content/data/experiences";
+import { headerData } from "~/navigation";
 const metadata = {
-  title: 'Home',
+  title: "Home",
 };
 ---
 
 <Layout metadata={metadata}>
   <Fragment slot="announcement"></Fragment>
   <Fragment slot="header">
-    <Header
-      links={[
-        { text: 'Home', href: '#' },
-        { text: 'About', href: '#about' },
-        { text: 'Resume', href: '#resume' },
-        { text: 'Porfolio', href: '#porfolio' },
-        { text: 'Blog', href: '#blog' },
-        { text: 'Github', href: 'https://github.com/podcoder' },
-      ]}
-      actions={[
-        {
-          text: 'Hire me',
-          href: '#',
-        },
-      ]}
-      isSticky
-      showToggleTheme
-    />
+    <Header {...headerData} isSticky showToggleTheme />
   </Fragment>
 
   <!-- Hero2 Widget ******************* -->
@@ -48,11 +33,21 @@ const metadata = {
     id="hero"
     title="Seddiq Sorush"
     tagline="Senior Software Engineer"
-    actions={[{ variant: 'primary', text: 'Hire me', href: getPermalink('/contact#form') }]}
+    actions={[
+      {
+        variant: "primary",
+        text: "Hire me",
+        href: getPermalink("/contact#form"),
+      },
+    ]}
   >
     <Fragment slot="subtitle">
-      I’m a Senior Software Engineer with a passion for building scalable, high-performance systems. <br /> 
-      With over 10 years of experience and a Bachelor of Technology in Electronics Engineering, I specialize in crafting innovative software solutions. I thrive on solving complex problems and optimizing systems, leveraging my deep technical expertise to create impactful, future-proof software.
+      I’m a Senior Software Engineer with a passion for building scalable,
+      high-performance systems. <br />
+      With over 10 years of experience and a Bachelor of Technology in Electronics
+      Engineering, I specialize in crafting innovative software solutions. I thrive
+      on solving complex problems and optimizing systems, leveraging my deep technical
+      expertise to create impactful, future-proof software.
     </Fragment>
   </Hero>
 
@@ -63,47 +58,62 @@ const metadata = {
     columns={3}
     items={[
       {
-        icon: 'tabler:brand-linkedin',
+        icon: "tabler:brand-linkedin",
         callToAction: {
-          target: '_blank',
-          text: 'LinkedIn',
-          href: '#',
+          target: "_blank",
+          text: "LinkedIn",
+          href: "#",
         },
       },
       {
-        icon: 'tabler:brand-github',
+        icon: "tabler:brand-github",
         callToAction: {
-          target: '_blank',
-          text: 'Github',
-          href: '#',
+          target: "_blank",
+          text: "Github",
+          href: "#",
         },
       },
       {
-        icon: 'tabler:brand-gmail',
+        icon: "tabler:brand-gmail",
         callToAction: {
-          target: '_blank',
-          text: 'Gmail',
-          href: '#',
+          target: "_blank",
+          text: "Gmail",
+          href: "#",
         },
       },
     ]}
     image={{
       src: MyPhoto,
-      alt: 'Seddiq Sorush',
-      loading: 'eager',
+      alt: "Seddiq Sorush",
+      loading: "eager",
     }}
   >
     <Fragment slot="content">
-      <h2 class="text-2xl font-bold tracking-tight dark:text-white sm:text-3xl mb-2">About me</h2>
+      <h2
+        class="text-2xl font-bold tracking-tight dark:text-white sm:text-3xl mb-2"
+      >
+        About me
+      </h2>
       <p>
-        Welcome to my professional journey. With over a decade of experience in software engineering, I'm passionate about transforming ideas into scalable, impactful solutions. Each line of code I write is crafted with precision and purpose, building the foundation for innovative applications that meet the needs of today's fast-paced digital world.
+        Welcome to my professional journey. With over a decade of experience in
+        software engineering, I'm passionate about transforming ideas into
+        scalable, impactful solutions. Each line of code I write is crafted with
+        precision and purpose, building the foundation for innovative
+        applications that meet the needs of today's fast-paced digital world.
       </p>
       <br />
       <p>
-        I draw inspiration from various technologies and methodologies, continuously evolving to stay at the forefront of industry advancements. Whether developing robust APIs, designing intuitive user interfaces, or leveraging the power of cloud platforms and modern frameworks, my work reflects a commitment to excellence and constant growth.
+        I draw inspiration from various technologies and methodologies,
+        continuously evolving to stay at the forefront of industry advancements.
+        Whether developing robust APIs, designing intuitive user interfaces, or
+        leveraging the power of cloud platforms and modern frameworks, my work
+        reflects a commitment to excellence and constant growth.
       </p>
       <br />
-      <p>If you're interested in collaborating or learning more about my work, feel free to contact me at :</p>
+      <p>
+        If you're interested in collaborating or learning more about my work,
+        feel free to contact me at :
+      </p>
     </Fragment>
 
     <Fragment slot="bg">
@@ -116,117 +126,8 @@ const metadata = {
   <Steps
     id="resume"
     title="Work experience"
-    items={[
-      {
-        title:
-          'Senior Backend Developer <br /> <span class="font-normal">Apple, Sunnyvale, CA</span> <br /> <span class="text-sm font-normal">2023 - Present</span>',
-        description: `<ul class="list-disc">
-        <li>Successfully implemented OAuth 2.0 and OpenID Connect to enhance security and access control within a few internal apps. This
-resulted in a robust authentication and authorization mechanism that ensured the confidentiality and integrity of user data.</li>
-        <li>Developed a backend system, leveraging cutting-edge technologies, including Node JS, Express, PostgreSQL, Java, Kafka,
-GraphQL and RESTful APIs. This foundation allowed for efficient data storage, retrieval, and processing, enabling the system to
-handle thousands of requests seamlessly.</li>
-        <li>Collaborated closely with frontend engineers to create GraphQL, and RESTful APIs that enabled seamless communication
-between the frontend and backend, resulting in a user-friendly interface and ensuring a seamless user experience.</li>
-  <li>Continuously36.3.optimized the backend architecture to improve system scalability and performance. This included fine-tuning
-database queries, implementing caching mechanisms, and adopting microservices architecture to ensure the system could handle
-growing data loads with ease.</li>        
-</ul>`,
-        icon: 'tabler:briefcase',
-      },
-      {
-        title:
-          'Lead Developer <br /> <span class="font-normal">Williams-Sonoma Inc., San Francisco, CA</span> <br /> <span class="text-sm font-normal">2021 - 2023</span>',
-        description: `<ul class="list-disc ">
-        <li class="leading-relaxed">Led a team of 5 on-site and offshore developers in designing, developing, and maintaining software applications using Java,
-Spring, JavaScript, Vue.js, React.js, LitElement, CSS, Tailwind, and other relevant technologies. Mentored and guided junior
-developers and oversaw teams in an Agile environment.</li> 
-<li>Successfully added new features to the Williams-Sonoma eCommerce platform and its sub-brands, including a unique Wedding
-Registry design that increased customer engagement significantly, Buy Online and Pickup in Store functionality, and Smart Banner
-integration that boosted mobile app downloads. Implemented micro-frontend architecture to deliver scalable and maintainable
-software applications.</li> 
-<li>Responsible for maintaining the Registry app, including managing the CI/CD pipeline using Jenkins, Docker, and Kubernetes.
-Reduced Registry App bugs in development and production environments to a minimum, collaborated with cross-functional teams,
-and ensured adherence to industry best practices for software development.</li> </ul>`,
-        icon: 'tabler:briefcase',
-      },
-      {
-        title:
-          'Lead Developer <br /> <span class="font-normal">MDout, Inc., San Francisco, CA</span> <br /> <span class="text-sm font-normal">2020 - 2021</span>',
-        description: `<ul class="list-disc ">
-        <li class="leading-relaxed">Led & contribute to a team of 10 developers in successfully launching a SaaS-based Optometry HER system for USA-based
-clinics, utilizing Node, TypeScript, Angular, MongoDB, and other technologies.</li> 
-<li>Trained and supervised the team in TypeScript, Angular, and Node, extensively improving their skills and contribution and
-increasing overall code quality.</li> 
-<li>Developed a user-friendly and innovative user interface for the EHR system with Angular, increasing customer engagement and
-satisfaction.</li> 
-<li>Created standards and processes to ensure high-quality work, including conducting code reviews, implementing automated testing,
-and creating documentation, resulting in a 95% bug-free release rate.</li>
-</ul>`,
-        icon: 'tabler:briefcase',
-      },
-      {
-        title:
-          'Senior Full Stack Software Engineer <br /> <span class="font-normal">International Organization for Migration (IOM), Kabul, Afghanistan</span> <br /> <span class="text-sm font-normal">2018 - 2021</span>',
-        description: `<ul class="list-disc ">
-        <li class="leading-relaxed">Collaborated with cross-functional teams to design and develop robust, efficient, and high-quality code that adhered to industry best
-practices and standards, resulting in successful project delivery and customer satisfaction.</li> 
-<li>practices and standards, resulting in successful project delivery and customer satisfaction.
-• Developed cutting-edge MIDAS and SHURA applications using .NET Core, C#, Vue, React, Java, Kotlin, Kafka, Flutter, and other
-state-of-the-art technologies, delivering compelling solutions that met business goals and exceeded user expectations.</li> 
-<li>Integrated Neurotechnology biometric devices seamlessly with the web application, enabling the capture of unique bio info and
-ensuring transparency of data by over 90%, thereby significantly reducing fraudulent activities and enhancing data security.</li>
-<li>Implemented innovative offline-first strategies, resulting in improved application performance, faster response times, and enhanced
-user satisfaction, even in areas with poor or no internet connectivity.</li>
-<li>Developed intuitive and user-friendly front-end applications using React JS and Vue JS, resulting in improved user satisfaction and
-engagement.</li>
-<li>Designed and developed mobile applications to support various projects, demonstrating my versatility and adaptability in meeting
-evolving client needs.</li>
-</ul>`,
-        icon: 'tabler:briefcase',
-      },
-      {
-        title:
-          'Software Engineer <br /> <span class="font-normal">Government, Kabul, Afghanistan</span> <br /> <span class="text-sm font-normal">2017 - 2018</span>',
-        description: `<ul class="list-disc ">
-        <li class="leading-relaxed">Revolutionized passport application processing for over 10,000 daily users by spearheading the design, development, and
-implementation of the Afghanistan Online Passport System. This game-changing solution reduced waiting times by 85%,
-streamlined the passport application process, and enhanced user experience.</li> 
-<li>Contributed to developing the Government Resource Planning (GRP) application, a transformative system used by over 20% of
-government offices, enabling government agencies to optimize their resources, improve workflows, and deliver better services to
-the public.</li>
-<li>Played a critical role in developing the groundbreaking Afghanistan Passport System, which processes and prints over 5,000 new
-passports on daily bases. Contributed to enhancing national security, promoting international travel, and strengthening the country's
-diplomatic relations as a critical member of a dynamic team of 5.</li>
-<li>Meticulously documented and illustrated complex solutions using flow charts, diagrams, charts, and code comments to streamline
-processes, improve collaboration, and ensure the smooth functioning of various projects; demonstrated exceptional technical
-proficiency and attention to detail.</li>
-</ul>`,
-        icon: 'tabler:briefcase',
-      },
-      {
-        title:
-          'Software Engineer <br /> <span class="font-normal">SPEENSOFT, Kabul, Afghanistan</span> <br /> <span class="text-sm font-normal">2016 - 2017</span>',
-        description: `<ul class="list-disc ">
-        <li class="leading-relaxed">Conceptualized, designed, developed, and deployed ZootZoot, a food and grocery delivery application consisting of web and
-mobile applications for Android and iOS. The application generated significant revenue in its first year.,
-providing an innovative solution that disrupted the traditional food and grocery delivery industry.</li> 
-<li>Provided expert training to software developers on Vue.js, React, React Native, Laravel, Firebase, and other related
-technologies. This training program increased their contribution by more than 50%, resulting in a significant expansion of their
-skillset and an improvement in the overall quality of work.</li>
-<li>Played a key role in the development of the Clean City application by studying system flow, data usage, and work processes,
-investigating problem areas, and following the software development lifecycle. This extensive contribution ensured the delivery
-of a high-quality application that met the needs of the users and exceeded their expectations.</li>
-<li>Conducted rigorous code reviews to ensure adherence to standard practices, maintain code quality, and prevent the breaking of
-functionality. This meticulous approach to the quality assurance provided a robust, reliable, and error-free application that
-enhanced user satisfaction and improved the overall performance of the software system.</li>
-<li>Participating in educational opportunities, reading professional publications, and actively engaging with personal networks to
-remain up-to-date with emerging trends and best practices.</li>
-</ul>`,
-        icon: 'tabler:briefcase',
-      },
-    ]}
-    classes={{ container: 'max-w-3xl' }}
+    items={experiences}
+    classes={{ container: "max-w-3xl" }}
   />
 
   <!-- Steps Widget ****************** -->
@@ -237,14 +138,14 @@ remain up-to-date with emerging trends and best practices.</li>
     items={[
       {
         title: `Bachelor of Technology (Electronics Engineering) <br /> <span class="font-normal">Pune University</span> <br /> <span class="text-sm font-normal">2012 - 2016</span>`,
-        icon: 'tabler:school',
+        icon: "tabler:school",
       },
       // {
       //   title: `Bachelor of Arts in Graphic Design <br /> <span class="font-normal">New York University's School of Design</span> <br /> <span class="text-sm font-normal">2014 - 2018</span>`,
       //   icon: 'tabler:school',
       // },
     ]}
-    classes={{ container: 'max-w-3xl' }}
+    classes={{ container: "max-w-3xl" }}
   />
 
   <!-- Features3 Widget ************** -->
@@ -256,45 +157,55 @@ remain up-to-date with emerging trends and best practices.</li>
     defaultIcon="tabler:point-filled"
     items={[
       {
-    "title": "Backend Development",
-    "description": "Expert in designing and implementing robust backend systems, including databases and APIs."
-},
-{
-    "title": "Frontend Development",
-    "description": "Proficient in creating dynamic, responsive user interfaces using modern frameworks and technologies."
-},
-{
-    "title": "API Integration",
-    "description": "Skilled at integrating third-party services and creating custom APIs for seamless data flow."
-},
-{
-    "title": "Cloud Architecture",
-    "description": "Experienced in building scalable and secure cloud-based solutions using AWS, Azure, or Google Cloud."
-},
-{
-    "title": "DevOps & CI/CD",
-    "description": "Adept in implementing automated pipelines for continuous integration, testing, and deployment."
-},
-{
-    "title": "Database Management",
-    "description": "Proficient in designing, managing, and optimizing both SQL and NoSQL databases for performance and scalability."
-},
-{
-    "title": "Version Control",
-    "description": "Skilled in using Git for version control and managing collaborative development processes."
-},
-{
-    "title": "Cross-Platform Development",
-    "description": "Experienced in developing applications that work seamlessly across different platforms, including web and mobile."
-},
-{
-    "title": "Agile Methodologies",
-    "description": "Experienced in working within Agile teams, utilizing Scrum and Kanban frameworks for efficient project delivery."
-},
-{
-    "title": "Problem Solving",
-    "description": "Diligent in identifying complex issues and applying creative, efficient solutions in development."
-}
+        title: "Backend Development",
+        description:
+          "Expert in designing and implementing robust backend systems, including databases and APIs.",
+      },
+      {
+        title: "Frontend Development",
+        description:
+          "Proficient in creating dynamic, responsive user interfaces using modern frameworks and technologies.",
+      },
+      {
+        title: "API Integration",
+        description:
+          "Skilled at integrating third-party services and creating custom APIs for seamless data flow.",
+      },
+      {
+        title: "Cloud Architecture",
+        description:
+          "Experienced in building scalable and secure cloud-based solutions using AWS, Azure, or Google Cloud.",
+      },
+      {
+        title: "DevOps & CI/CD",
+        description:
+          "Adept in implementing automated pipelines for continuous integration, testing, and deployment.",
+      },
+      {
+        title: "Database Management",
+        description:
+          "Proficient in designing, managing, and optimizing both SQL and NoSQL databases for performance and scalability.",
+      },
+      {
+        title: "Version Control",
+        description:
+          "Skilled in using Git for version control and managing collaborative development processes.",
+      },
+      {
+        title: "Cross-Platform Development",
+        description:
+          "Experienced in developing applications that work seamlessly across different platforms, including web and mobile.",
+      },
+      {
+        title: "Agile Methodologies",
+        description:
+          "Experienced in working within Agile teams, utilizing Scrum and Kanban frameworks for efficient project delivery.",
+      },
+      {
+        title: "Problem Solving",
+        description:
+          "Diligent in identifying complex issues and applying creative, efficient solutions in development.",
+      },
     ]}
   />
 
@@ -493,13 +404,13 @@ remain up-to-date with emerging trends and best practices.</li>
 
   <!-- BlogLatestPost Widget **************** -->
 
-  <!-- <BlogLatestPosts
+  <BlogLatestPosts
     id="blog"
     title="Explore my insightful articles on my blog"
-    information={`Dive into a realm of design wisdom and creative inspiration, where you'll find invaluable insights, practical tips, and captivating narratives that elevate and enrich your creative journey.`}
+    information={`Unlock real-world insights and practical lessons from hands-on experience, with valuable strategies and proven approaches to tackle challenges and drive success.`}
   >
     <Fragment slot="bg">
       <div class="absolute inset-0 bg-blue-50 dark:bg-transparent"></div>
     </Fragment>
-  </BlogLatestPosts> -->
+  </BlogLatestPosts>
 </Layout>

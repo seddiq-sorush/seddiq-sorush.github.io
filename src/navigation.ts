@@ -5,7 +5,7 @@ export const headerData = {
     { text: "Home", href: "/#" },
     { text: "About", href: "/#about" },
     { text: "Resume", href: "/#resume" },
-    { text: "Porfolio", href: "/#porfolio" },
+    // { text: "Porfolio", href: "/#porfolio" },
     { text: "Blog", href: "/#blog" },
     { text: "Github", href: "https://github.com/podcoder" },
   ],
