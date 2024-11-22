@@ -1,0 +1,294 @@
+---
+publishDate: 2024-11-21T00:00:00Z
+title: Blog Application with Node, Express, PostgreSQL and Knex.js
+excerpt: In this step by step guide we will learn how to create a Blog application with Node and PostgreSQL with Knex.js ORM.
+image: ~/assets/images/blog-images/node-express-knex-postgres.svg
+category: Mobile App Development
+tags:
+  - Node
+  - Web Development
+  - API
+  - Express.js
+  - Knex.js
+metadata:
+  canonical: https://seddiq-sorush.github.io/node-express-docker-knex-postgres
+---
+
+
+## Overview
+
+This step-by-step tutorial is a beginner-friendly introduction to connecting your Node backend application to a PostgreSQL database and leveraging Knex.js, an Object-Relational Mapping (ORM) library.
+## Tech Stack: 
+Below, I'll explain the technologies used in this tutorial. Feel free to skip this section if you're already familiar with these tools.
+
+- **Node** — A JavaScript runtime built on Chrome’s V8 JavaScript engine. The key takeaway is that we can write server-side JavaScript to create full-stack applications entirely in JavaScript.
+
+- **npm** — Included with Node.js, npm (Node Package Manager) is a robust tool for managing dependencies, tracking publicly available code packages, and specifying package versions.
+
+- **Express** — A web development framework for handling HTTP requests and responses in Node.js. It makes it easier to create APIs and manage routing.
+
+- **Knex.js** — A query builder and ORM for Node.js that allows you to interact with your SQL database in a more structured, JavaScript-friendly way.
+
+- **PostgreSQL** — A powerful relational database management system that will store your data. While MongoDB is also commonly paired with Node, PostgreSQL is a great choice for structured data storage.
+
+- **Docker** - A platform for running containerized applications, which helps isolate dependencies and ensure consistency across environments.
+
+## Initial Setup
+To follow along with this tutorial, you'll need to install the following technologies. Most of these installations are done via the terminal command line and should work fine on macOS, Linux, or Windows (using cmd or PowerShell).
+#### Node
+The easiest way to install Node.js is by using[NVM(Node Version Manager)](https://github.com/nvm-sh/nvm). Alternatively, you can download and install Node.js from the  [Official Website](https://nodejs.org/en).
+```shell
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+# OR using wget
+wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+```
+Make sure to add NVM to your environment variables (note: Windows installation can be a bit tricky):
+```shell
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+```
+
+After installing, verify that NVM is correctly installed:
+```shell
+nvm -v
+# OR
+nvm --version
+# Expected out: 0.40.1 or another version number
+```
+Now, install Node.js using NVM. The good thing about NVM is that it allows you to have `multiple versions` of Node installed and switch between them as needed.
+```shell
+nvm install node # OR
+nvm install --lts # This will install the latest LTS version
+
+# To install a specific version of Node, use `nvm ls-remote` to list remote versions
+nvm ls-remote # 
+# OR
+nvm ls-remote --lts #Will list only the latest LTS versions
+nvm install 18.1.0
+
+# To see the versions of Node installed on your machine and switch to a different version:
+nvm ls
+nvm use <version>
+```
+Once Node is installed, you can confirm the installation by checking the version:
+```shell
+node -v
+```
+
+#### Docker
+The easiest way to use Docker is to install [Docker Desktop ](https://www.docker.com/products/docker-desktop/) (Free for personal use). Alternatively, you can install docker via [Homebrew](https://brew.sh/) (on macOS)
+```shell
+# # To install Homebrew (if not already installed)
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+# Update Homebrew
+brew update
+# Install Docker
+brew install --cask docker
+# Verify that Docker is installed
+docker --version # Expected output: Docker version 27.0.3, build 7d4bcd8
+# To Open Docker
+open /Applications/Docker.app
+```
+### Run PostgreSQL
+With Docker up and running, we can now pull the official PostgreSQL Docker image and run it on your machine.
+
+Pull the PostgreSQL Docker image: Use the following command to pull the latest PostgreSQL image from Docker Hub:
+
+```shell
+docker pull postgres
+```
+Run the PostgreSQL container: To start a PostgreSQL container, run the following command. This will create a new PostgreSQL instance running inside a container:
+
+```shell
+docker run --name postgres-container -e POSTGRES_USER=myuser -e POSTGRES_PASSWORD=mypassword -e POSTGRES_DB=mydb -p 5432:5432 -d postgres
+```
+
+`--name postgres-container` gives the container a name. <br/>
+`-e POSTGRES_USER=myuser` sets the username for the PostgreSQL instance. <br/>
+`-e POSTGRES_PASSWORD=mypassword` sets the password for the PostgreSQL user.<br/>
+`-e POSTGRES_DB=mydb` sets the name of the database to create.<br/>
+`-p 5432:5432` maps port 5432 on the container to port 5432 on your machine (default PostgreSQL port).<br/>
+`-d postgres` runs the container in detached mode, so it runs in the background.<br/>
+
+Verify the container is running: To check if the PostgreSQL container is running correctly, use:
+```shell
+docker ps
+#You should see an entry for postgres-container in the list of running containers.
+```
+
+Access the PostgreSQL container: You can access the running PostgreSQL container by executing the following command:
+
+```shell
+docker exec -it postgres-container psql -U myuser -d mydb # you need to enter your password (in our case `mypassword`)
+```
+This command opens an interactive terminal inside the container and connects to the mydb database using the myuser credentials.
+
+#### Postman
+To test our APIs we'll use Postman [Downlaod from Official Website](https://www.postman.com/downloads/)
+
+
+## Node Project Setup
+Now that we have Node and npm set up, let's create a simple Node.js project using Express and set up automatic server reload with nodemon.
+
+**1. Navigate to your project folder**: Open your terminal and navigate to the folder where you want to store your project. You can also open the folder in your preferred IDE (e.g., VSCode):
+```shell
+cd /path/to/your/project/folder
+
+# If you prefer using an IDE like VSCode, you can open the folder directly:
+code /path/to/your/project/folder
+```
+
+**2. Initialize the project**: Once you’re in your project folder, run the following command to initialize a new Node.js project. This will create a package.json file with default values.
+```shell
+npm init -y
+```
+**3. Install Required Dependencies**: Install the essential dependencies for your project:
+
+- **Express**: Web framework for Node.js.
+- **Knex.js**: SQL query builder for interacting with your database.
+- **pg**: PostgreSQL client for Node.js.
+Run this command to install them:
+```shell
+npm install express knex pg 
+```
+Additionally, install `nodemon` as a development dependency for automatically restarting the server whenever you make changes:
+```shell
+npm install -D nodemon
+```
+**4. Update package.json Scripts**: In your `package.json` file, you’ll see a section for `scripts`. Add a `dev` script to run your application with `nodemon`, like this:
+```json
+{
+  "name": "knex-tutorial",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js" // you need to update this
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "express": "^4.21.1",
+    "knex": "^3.1.0",
+    "pg": "^8.13.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  }
+}
+```
+**5. Create the `index.js` File**: Now, create the index.js file in your project folder and add the following code to set up a basic Express server:
+```javascript
+// Import express
+const express = require('express');
+
+// Create an express app
+const app = express();
+
+// Define the port the server will run on
+const PORT = process.env.PORT || 3000;
+
+// Start the server
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
+```
+**6. Run the Application**: To run the server with nodemon, use the following command:
+```shell
+npm run dev
+```
+You should see the following output:
+```shell
+> knex-tutorial@1.0.0 dev
+> nodemon index.js
+
+[nodemon] 3.1.7
+[nodemon] to restart at any time, enter `rs`
+[nodemon] watching path(s): *.*
+[nodemon] watching extensions: js,mjs,cjs,json
+[nodemon] starting `node index.js`
+Server is running on port 3000
+```
+**7. Test Your Server**: Open your browser and go to http://localhost:3000. You should see your server running and able to respond to requests.
+
+## Knex Configuration
+Now that our server is up and running, it’s time to integrate the database. Knex.js offers a great deal of flexibility when it comes to interacting with databases. You can use Knex in a code-first approach to design your database schema, create tables, seed data, and handle database transactions. Additionally, Knex allows you to configure different database environments (development, staging, production) with ease.
+
+**1. Install Knex Globally**: To get started with Knex, you’ll first need to install it globally on your machine. This will allow you to use Knex’s CLI tools for database migrations, seeding, and more.
+Run the following command to install `Knex globally`:
+```shell
+npm install -g knex
+```
+**2. Verify Installation**: Once the installation is complete, verify that Knex was installed correctly by checking its version:
+```shell
+knex --version
+```
+The output should look something like this:
+```shell
+Knex CLI version: 3.1.0
+Knex Local version: 3.1.0
+```
+**3. Knex for Database Management**: Knex simplifies working with databases in a programmatic manner, making it easier to manage schemas, data migrations, and seed files. Here are some key features Knex provides:
+
+- `Code-first Database Design`: You can define and manage your tables and relationships through JavaScript code instead of manually writing SQL.
+- `Migrations`: You can create version-controlled migrations that help you track changes to your database schema over time.
+- `Seeding`: Easily seed data into your database for testing or initial setup.
+- `Environment-Specific Configuration`: Knex allows you to set up different configurations for development, staging, and production environments, ensuring that your app works correctly across different environments.
+
+## Database Configuration
+To start the database integration with your node application. creating the `knexfile` is essential. The knexfile contains configuration settings for connecting to your database, including different environments like `development`, `staging`, and `production`.
+To create `knexfile` you can run the following and it will create the `knexfile.js` fo you:
+```shell
+knex init
+```
+**2. Configure the `knexfile.js` for Different Environments: Open the knexfile.js and configure it as follows:
+```javascript
+// Update with your config settings.
+
+/**
+ * @type { Object.<string, import("knex").Knex.Config> }
+ */
+module.exports = {
+
+  development: {
+    client: 'sqlite3',
+    connection: {
+      filename: './dev.sqlite3'
+    }
+  },
+
+  staging: {
+    client: 'postgresql',
+    connection: {
+      database: 'my_db',
+      user:     'username',
+      password: 'password'
+    },
+    pool: {
+      min: 2,
+      max: 10
+    },
+    migrations: {
+      tableName: 'knex_migrations'
+    }
+  },
+
+  production: {
+    client: 'postgresql',
+    connection: {
+      database: 'my_db',
+      user:     'username',
+      password: 'password'
+    },
+    pool: {
+      min: 2,
+      max: 10
+    },
+    migrations: {
+      tableName: 'knex_migrations'
+    }
+  }
+
+};
+```
