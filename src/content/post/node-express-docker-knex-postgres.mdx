@@ -2,7 +2,7 @@
 publishDate: 2024-11-21T00:00:00Z
 title: Blog Application with Node, Express, PostgreSQL and Knex.js
 excerpt: In this step by step guide we will learn how to create a Blog application with Node and PostgreSQL with Knex.js ORM.
-image: ~/assets/images/blog-images/node-express-knex-postgres.svg
+image: ~/assets/images/blog-images/node-express-knex-postgres/thumbnail.svg
 category: Mobile App Development
 tags:
   - Node
@@ -147,9 +147,11 @@ npm init -y
 - **Express**: Web framework for Node.js.
 - **Knex.js**: SQL query builder for interacting with your database.
 - **pg**: PostgreSQL client for Node.js.
+- **dotenv**: To load environment variables (configurations)
+- **cors**: Middleware to enable [CORS](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
 Run this command to install them:
 ```shell
-npm install express knex pg 
+npm install express knex pg dotenv cors
 ```
 Additionally, install `nodemon` as a development dependency for automatically restarting the server whenever you make changes:
 ```shell
@@ -169,6 +171,8 @@ npm install -D nodemon
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
     "express": "^4.21.1",
     "knex": "^3.1.0",
     "pg": "^8.13.1"
@@ -182,9 +186,11 @@ npm install -D nodemon
 ```javascript
 // Import express
 const express = require('express');
+const cors = require('cors')
 
 // Create an express app
 const app = express();
+app.use(cors()); // you can allow specific origins (domains)
 
 // Define the port the server will run on
 const PORT = process.env.PORT || 3000;
@@ -239,10 +245,11 @@ Knex Local version: 3.1.0
 ## Database Configuration
 To start the database integration with your node application. creating the `knexfile` is essential. The knexfile contains configuration settings for connecting to your database, including different environments like `development`, `staging`, and `production`.
 To create `knexfile` you can run the following and it will create the `knexfile.js` fo you:
+
 ```shell
 knex init
 ```
-**2. Configure the `knexfile.js` for Different Environments: Open the knexfile.js and configure it as follows:
+**2. Configure the `knexfile.js` for Different Environments**: Open the knexfile.js and configure it as follows:
 ```javascript
 // Update with your config settings.
 
@@ -292,3 +299,152 @@ module.exports = {
 
 };
 ```
+
+
+Since we're in development mode, let's update the development configurations:
+
+```javascript
+require('dotenv').config(); // <-- Update this
+
+/**
+ * @type { Object.<string, import("knex").Knex.Config> }
+ */
+module.exports = {
+
+  development: {
+    client: 'pg', // we use `pg`(https://www.npmjs.com/package/pg) as client
+    connection: {
+      database: process.env.DB_NAME ,
+      user:     process.env.DB_USER ,
+      password: process.env.DB_PASSWORD,
+      host: process.env.DB_HOST,
+      port: process.env.DB_PORT
+    },
+    migrations: {
+      directory: "./data/migrations" // make sure to create data/migrations folder
+    },
+    seeds: { directory: "./data/seeds", timestampFilenamePrefix: true } // make sure to create data/seeds folder
+  },
+
+  // ... rest of the code
+
+};
+```
+**NOTE:** Make sure to add the following configuration in your `.env` file:
+```
+DB_NAME=my_db
+DB_USER=myuser
+DB_PASSWORD=mypassword
+DB_HOST=localhost
+DB_PORT=5432
+```
+
+
+### Creating tables
+We now use the `Knex` [Migration CLI](https://knexjs.org/guide/migrations.html#migration-cli) to create our database tables. Make sure you run the following commands from the root directory of your project.
+
+```shell
+knex migrate:make users # knex migrate: make table_name
+```
+The command above will generate a migration file (the code to create a table in the database) and place it in the `data/migrations` folder.
+![Migration](~/assets/images/blog-images/node-express-knex-postgres/migration.png)
+The Migration file contains two methods. `up` and `down`.
+
+```javascript
+/**
+ * @param { import("knex").Knex } knex
+ * @returns { Promise<void> }
+ */
+exports.up = function(knex) {
+  
+};
+
+/**
+ * @param { import("knex").Knex } knex
+ * @returns { Promise<void> }
+ */
+exports.down = function(knex) {
+  
+};
+```
+1. **`up` Method**:
+  - The up method is used to apply changes to the database `schema`, such as `creating tables`, `adding columns`, `modifying columns`, or `creating indexes`.
+  - It's called when we run `knex migrate:latest`, which applies all the pending migrations.
+  - Think of up as the process of **applying changes**.
+2. **`down` Method**:
+  - The down method defines how to `undo` the changes made in the up method. This is typically used for rolling back a migration.
+  - It's called when you run `knex migrate:rollback`, which undoes the most recent migration.
+  - Think of down as the process of `reversing or rolling back` changes.
+
+Now let's makes the changes to our `users` table:
+```javascript
+/**
+ * @param { import("knex").Knex } knex
+ * @returns { Promise<void> }
+ */
+exports.up = function(knex) {
+    return knex.schema.createTable('users', function(table) {
+        table.increments('id').primary();
+        table.string('name');
+        table.string('email').unique();
+        table.timestamps();
+      });
+};
+
+/**
+ * @param { import("knex").Knex } knex
+ * @returns { Promise<void> }
+ */
+exports.down = function(knex) {
+  return knex.schema.dropTableIfExists('users');
+};
+```
+Similarly, we can create the `posts` table:
+```shell
+knex migrate:make posts
+```
+```javascript
+/**
+ * @param { import("knex").Knex } knex
+ * @returns { Promise<void> }
+ */
+exports.up = function (knex) {
+    return knex.schema.createTable('posts', function (table) {
+        table.increments('id').primary();
+        table.integer('created_by');
+        table.foreign('created_by').references('id').inTable('users');
+        table.string('title');
+        table.text('content');
+        table.timestamps();
+    });
+};
+
+/**
+ * @param { import("knex").Knex } knex
+ * @returns { Promise<void> }
+ */
+exports.down = function (knex) {
+    return knex.schema.dropTableIfExists('posts');
+};
+```
+**NOTE:** in the above `posts` migration file, we've established a relationship between the `posts` table and the `users` tables. `Knex` provides a variety of useful methods to handle such operations efficiently. 
+Now, let's run our migrations. This will create the respective tables in the database along with their relationships.
+```shell
+knex migrate:latest
+```
+This will create four tables: two for tracking migrations and the other two are `users` and `posts` tables.
+![Migration](~/assets/images/blog-images/node-express-knex-postgres/migrate-latest.png)
+A few other Migration commands:
+| Command                          | Description                                                             |
+|----------------------------------|-------------------------------------------------------------------------|
+| `knex migrate:make <name>`       | Creates a new migration file.                                           |
+| `knex migrate:latest`            | Runs all pending migrations.                                            |
+| `knex migrate:latest --env production`            | Runs all pending migrations for production env.        |
+| `knex migrate:rollback`          | Rolls back the most recent batch of migrations.                         |
+| `knex migrate:rollback --all`          | Rolls back all the completed migrations                           | 
+| `knex migrate:status`            | Shows the status of all migrations (applied or pending).                |
+| `knex migrate:currentVersion`    | Shows the version of the most recent applied migration.                 |
+| `knex migrate:up`    | To run the next migration that has not yet been run.                                |
+| `knex migrate:up <migration.js>`    | To run a specific migration by name.                                 |
+| `knex migrate:down <migration.js>`  | Manually rolls back a specific migration by name.                    |
+
