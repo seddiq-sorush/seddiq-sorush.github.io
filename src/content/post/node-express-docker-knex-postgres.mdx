@@ -387,7 +387,7 @@ exports.up = function(knex) {
         table.increments('id').primary();
         table.string('name');
         table.string('email').unique();
-        table.timestamps();
+        table.timestamps(); 
       });
 };
 
@@ -399,6 +399,7 @@ exports.down = function(knex) {
   return knex.schema.dropTableIfExists('users');
 };
 ```
+**NOTE:** `table.timestamps()` will create two table columns, `created_at` and `updated_at`
 Similarly, we can create the `posts` table:
 ```shell
 knex migrate:make posts
@@ -448,3 +449,119 @@ A few other Migration commands:
 | `knex migrate:up <migration.js>`    | To run a specific migration by name.                                 |
 | `knex migrate:down <migration.js>`  | Manually rolls back a specific migration by name.                    |
 
+## Seeding data
+Now that we have created our tables, let's **seed** (insert data into) them with fake data. Seeding data is typically done to test the application and ensure it behaves as expected with realistic inputs.
+To accomplish this, we can use `knex seed` to insert data into our tables. Similar to migrations, Knex also provides a [Seed CLI](https://knexjs.org/guide/migrations.html#seed-cli) to help with seeding operations.
+
+```shell
+knex seed:make users # knex seed:make seed_name
+```
+The command above will generate a seed file, which contains the code to insert data into the database, and place it in the `data/seeds` folder.
+
+![Seed](~/assets/images/blog-images/node-express-knex-postgres/seed.png)
+
+The seed file includes a `seed` method that will populate the database with data when executed.
+
+To seed fake data, let's install [faker.js](https://fakerjs.dev/) package:
+```shell
+npm install --save-dev @faker-js/faker
+```
+
+Now, let's add `100` fake users into our `users` table:
+
+```javascript
+const { faker } = require('@faker-js/faker');
+
+/**
+ * @param { import("knex").Knex } knex
+ * @returns { Promise<void> } 
+ */
+exports.seed = async function (knex) {
+  // Deletes ALL existing entries
+  await knex('users').del()
+
+  const users = [];
+
+  for (let i = 0; i < 100; i++) {
+    const user = {
+      name: faker.person.fullName(),
+      email: faker.internet.email(),
+      created_at: faker.date.anytime(),
+      updated_at: faker.date.anytime(),
+    };
+
+    users.push(user);
+  }
+  await knex('users').insert(users);
+};
+```
+
+To insert fake data into the database, you can run the following:
+```shell
+knex seed:run 
+```
+The command above will run all the seed files located in the `data/seeds` folder. However, if you want to run a specific seed file, you can do so as follows:
+```shell
+knex seed:run --specific=seed-filename.js --specific=another-seed-filename.js
+```
+Seeding data into the `posts` table can be a little tricky because we have a `foreign key` relationship with the `users` table. First, we need to select user IDs from the `users` table and then randomly assign a post to a user. To select the `id` column from the `users` table, we can use the `pluck` method in Knex, and then use `Math.random()` to select a random ID. Here’s the complete code for the `posts` seed file:
+
+```javascript
+const { faker } = require('@faker-js/faker');
+
+const getColumnData = async (knex, tableName, columnName) => {
+  return new Promise((resolve, reject) => {
+    knex(tableName).pluck(columnName).then(async (columnData) => {
+      resolve(columnData);
+    });
+  })
+}
+
+
+/**
+ * @param { import("knex").Knex } knex
+ * @returns { Promise<void> } 
+ */
+exports.seed = async function (knex) {
+  // Deletes ALL existing entries
+  await knex('posts').del()
+
+  const userIds = await getColumnData(knex, "users", "id");
+
+  const posts = [];
+  for (let i = 0; i < 100; i++) {
+    const randomUser = Math.floor(Math.random() * userIds.length);
+    const randomUserId = userIds[randomUser];
+
+    const post = {
+      title: faker.lorem.sentence(),
+      content: faker.lorem.paragraphs(4),
+      created_by: randomUserId,
+      created_at: faker.date.anytime(),
+      updated_at: faker.date.anytime(),
+    }
+    posts.push(post);
+  }
+
+  await knex('posts').insert(posts);
+};
+
+```
+Since we've already run the `users` seed file, this time we only need to run the `posts` seed file. You can do it like this:
+
+```shell
+knex seed:run --specific=20241211204745_posts.js
+```
+
+Seed Commands:
+| Command                              | Description                                                              |
+|--------------------------------------|--------------------------------------------------------------------------|
+| `knex seed:make <name>`              | Creates a new seed file.                                                 |
+| `knex seed:run`                      | Runs all seed files to populate the database with data.                  |
+| `knex seed:run --specific=<name>`    | Runs a specific seed file by name.                                       |
+| `knex seed:run --directory=<path>`   | Runs seed files from a specific directory.                               |                        |
+| `knex seed:run --quiet`              | Suppresses output while running the seed files.                          |
+
+
+## Creating Routes
+It is the time to create our API routes to perform CRUD operations. 
