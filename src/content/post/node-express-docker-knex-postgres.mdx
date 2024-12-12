@@ -564,4 +564,348 @@ Seed Commands:
 
 
 ## Creating Routes
-It is the time to create our API routes to perform CRUD operations. 
+Now it's time to create the API routes to perform `CRUD` operations. Let's create the user routes and place them inside the `routes` folder.
+
+Inside the `routes` folder, create a file called `users_routes.js`. This file will contain the routes for performing CRUD operations on `users`. The code might look like this:
+```javascript
+const express = require('express');
+const router = express.Router();
+
+// Get environment variable, defaulting to "development"
+const env = process.env.NODE_ENV || "development";
+
+// Knex.js configuration file for database connection
+const knexConfig = require('../knexfile');
+const db = require("knex")(knexConfig[env]);
+
+/**
+ * GET /users
+ * 
+ * Endpoint to fetch all users from the database.
+ * 
+ * @returns {Array} An array of user objects.
+ */
+router.get("/", (req, res) => {
+    db("users")
+        .then(users => {
+            res.json(users);
+        })
+        .catch(err => {
+            res.status(500).json({ error: "Failed to fetch users" });
+        });
+});
+
+/**
+ * GET /users/:id
+ * 
+ * Endpoint to fetch a single user by ID from the database.
+ * 
+ * @param {number} id - The ID of the user to fetch.
+ * @returns {Object} The user object corresponding to the provided ID.
+ * @throws 404 - If no user with the provided ID is found.
+ */
+router.get("/:id", (req, res) => {
+    const { id } = req.params;
+
+    db("users")
+        .where({ id })
+        .first()
+        .then(user => {
+            if (!user) {
+                return res.status(404).json({ error: "User not found" });
+            }
+            res.json(user);
+        })
+        .catch(err => {
+            res.status(500).json({ error: "Failed to fetch user" });
+        });
+});
+
+/**
+ * POST /users
+ * 
+ * Endpoint to create a new user in the database.
+ * 
+ * @body {Object} user - The user data to be created. Must contain:
+ * - `name`: The name of the user.
+ * - `email`: The email of the user.
+ * 
+ * @returns {Object} The created user object with the assigned ID.
+ * @throws 400 - If required fields are missing or invalid.
+ */
+router.post("/", (req, res) => {
+    const { name, email } = req.body;
+
+    // Basic validation of required fields
+    if (!name || !email) {
+        return res.status(400).json({ error: "Name and email are required" });
+    }
+
+    db("users")
+        .insert({ name, email })
+        .returning("*")
+        .then(user => {
+            res.status(201).json(user[0]);
+        })
+        .catch(err => {
+            res.status(500).json({ error: "Failed to create user" });
+        });
+});
+
+/**
+ * PUT /users/:id
+ * 
+ * Endpoint to update an existing user by ID.
+ * 
+ * @param {number} id - The ID of the user to update.
+ * @body {Object} user - The user data to be updated. Optional fields:
+ * - `name`: The name of the user.
+ * - `email`: The email of the user.
+ * 
+ * @returns {Object} The updated user object.
+ * @throws 400 - If no data is provided for updating.
+ * @throws 404 - If the user with the provided ID is not found.
+ */
+router.put("/:id", (req, res) => {
+    const { id } = req.params;
+    const { name, email } = req.body;
+
+    if (!name && !email) {
+        return res.status(400).json({ error: "No data provided to update" });
+    }
+
+    db("users")
+        .where({ id })
+        .update({ name, email })
+        .returning("*")
+        .then(user => {
+            if (!user.length) {
+                return res.status(404).json({ error: "User not found" });
+            }
+            res.json(user[0]);
+        })
+        .catch(err => {
+            res.status(500).json({ error: "Failed to update user" });
+        });
+});
+
+/**
+ * DELETE /users/:id
+ * 
+ * Endpoint to delete a user by ID.
+ * 
+ * @param {number} id - The ID of the user to delete.
+ * 
+ * @returns {Object} Confirmation of the deletion.
+ * @throws 404 - If no user with the provided ID is found.
+ */
+router.delete("/:id", (req, res) => {
+    const { id } = req.params;
+
+    db("users")
+        .where({ id })
+        .del()
+        .then(count => {
+            if (!count) {
+                return res.status(404).json({ error: "User not found" });
+            }
+            res.json({ message: "User deleted successfully" });
+        })
+        .catch(err => {
+            res.status(500).json({ error: "Failed to delete user" });
+        });
+});
+
+module.exports = router;
+```
+Here is the code for `posts_routes.js` that you can place inside the `routes` folder.
+```javascript
+const express = require('express');
+const router = express.Router();
+
+// Get environment variable, defaulting to "development"
+const env = process.env.NODE_ENV || "development";
+
+// Knex.js configuration file for database connection
+const knexConfig = require('../knexfile');
+const db = require("knex")(knexConfig[env]);
+
+/**
+ * GET /posts
+ * 
+ * Endpoint to fetch all posts from the database.
+ * 
+ * @returns {Array} An array of post objects.
+ */
+router.get("/", (req, res) => {
+    db("posts")
+        .then(posts => {
+            res.json(posts);
+        })
+        .catch(err => {
+            res.status(500).json({ error: "Failed to fetch posts" });
+        });
+});
+
+/**
+ * GET /posts/:id
+ * 
+ * Endpoint to fetch a single post by ID from the database.
+ * 
+ * @param {number} id - The ID of the post to fetch.
+ * @returns {Object} The post object corresponding to the provided ID.
+ * @throws 404 - If no post with the provided ID is found.
+ */
+router.get("/:id", (req, res) => {
+    const { id } = req.params;
+
+    db("posts")
+        .where({ id })
+        .first()
+        .then(post => {
+            if (!post) {
+                return res.status(404).json({ error: "Post not found" });
+            }
+            res.json(post);
+        })
+        .catch(err => {
+            res.status(500).json({ error: "Failed to fetch post" });
+        });
+});
+
+/**
+ * POST /posts
+ * 
+ * Endpoint to create a new post in the database.
+ * 
+ * @body {Object} post - The post data to be created. Must contain:
+ * - `title`: The title of the post.
+ * - `content`: The content of the post.
+ * - `created_by`: The ID of the user who created the post.
+ * 
+ * @returns {Object} The created post object with the assigned ID.
+ * @throws 400 - If required fields are missing or invalid.
+ */
+router.post("/", (req, res) => {
+    const { title, content, created_by } = req.body;
+     const created_at = new Date().toISOString();
+
+    // Basic validation of required fields
+    if (!title || !content || !created_by) {
+        return res.status(400).json({ error: "Title, content, and created_by are required" });
+    }
+
+    db("posts")
+        .insert({ title, content, created_by, created_at})
+        .returning("*")
+        .then(post => {
+            res.status(201).json(post[0]);
+        })
+        .catch(err => {
+            res.status(500).json({ error: "Failed to create post" });
+        });
+});
+
+/**
+ * PUT /posts/:id
+ * 
+ * Endpoint to update an existing post by ID.
+ * 
+ * @param {number} id - The ID of the post to update.
+ * @body {Object} post - The post data to be updated. Optional fields:
+ * - `title`: The title of the post.
+ * - `content`: The content of the post.
+ * - `updated_at`: The timestamp when the post was last updated.
+ * 
+ * @returns {Object} The updated post object.
+ * @throws 400 - If no data is provided for updating.
+ * @throws 404 - If the post with the provided ID is not found.
+ */
+router.put("/:id", (req, res) => {
+    const { id } = req.params;
+    const { title, content } = req.body;
+    const updated_at = new Date().toISOString();
+
+    if (!title && !content) {
+        return res.status(400).json({ error: "No data provided to update" });
+    }
+
+    db("posts")
+        .where({ id })
+        .update({ title, content, updated_at })
+        .returning("*")
+        .then(post => {
+            if (!post.length) {
+                return res.status(404).json({ error: "Post not found" });
+            }
+            res.json(post[0]);
+        })
+        .catch(err => {
+            res.status(500).json({ error: "Failed to update post" });
+        });
+});
+
+/**
+ * DELETE /posts/:id
+ * 
+ * Endpoint to delete a post by ID.
+ * 
+ * @param {number} id - The ID of the post to delete.
+ * 
+ * @returns {Object} Confirmation of the deletion.
+ * @throws 404 - If no post with the provided ID is found.
+ */
+router.delete("/:id", (req, res) => {
+    const { id } = req.params;
+
+    db("posts")
+        .where({ id })
+        .del()
+        .then(count => {
+            if (!count) {
+                return res.status(404).json({ error: "Post not found" });
+            }
+            res.json({ message: "Post deleted successfully" });
+        })
+        .catch(err => {
+            res.status(500).json({ error: "Failed to delete post" });
+        });
+});
+
+module.exports = router;
+```
+
+Now we need to import these routes in our `index.js` as follow:
+```javascript
+// ... Code before
+const usersRoutes = require('./routes/users_routes');
+const postsRoutes = require('./routes/posts_routes');
+app.use("/users", usersRoutes);
+app.use("/posts", postsRoutes);
+//... Code after
+```
+
+## Testing APIs
+Now that we've created the `users` and `posts` routes, we can test them using `Postman` to ensure everything is functioning correctly.
+
+**For Example:**
+
+#### **GET /users**
+- URL: `http://localhost:5000/users`
+- **Example Response**:
+  ```json
+  [
+    {
+      "id": 1,
+      "name": "John Doe",
+      "email": "john@example.com"
+    },
+    {
+      "id": 2,
+      "name": "Jane Doe",
+      "email": "jane@example.com"
+    }
+  ]
+  ```
+
+<a href="https://github.com/podcoder/knex-tutorial" target="_blank" rel="noopener noreferrer">Link To the Github Repository</a>
