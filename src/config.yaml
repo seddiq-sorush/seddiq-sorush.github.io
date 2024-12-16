@@ -6,6 +6,9 @@ site:
 
   googleSiteVerificationId: orcPxI47GSa-cRvY11tUe6iGg2IO_RPvnA1q95iEM3M
 
+backend:
+  contactFormLink: https://podcoder.com/contact-app/api/v1/contact-message
+  cloudflareTurnstileSiteKey: 0x4AAAAAAA2OFsYTM9aQx6Wu
 # Default SEO metadata
 metadata:
   title:

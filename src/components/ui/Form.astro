@@ -1,15 +1,36 @@
 ---
-import type { Form as Props } from '~/types';
-import Button from '~/components/ui/Button.astro';
+import { BACKEND } from "astrowind:config";
+import type { Form as Props } from "~/types";
+import Button from "~/components/ui/Button.astro";
 
-const { inputs, textarea, disclaimer, button = 'Contact us', description = '' } = Astro.props;
+const {
+  inputs,
+  textarea,
+  disclaimer,
+  button = "Contact us",
+  description = "",
+} = Astro.props;
+
+const contactFormLink = BACKEND.contactFormLink;
+const cloudflareTurnstileSiteKey = BACKEND.cloudflareTurnstileSiteKey;
 ---
 
-<form>
+<script
+  src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+  async
+  defer
+  is:inline></script>
+<form id="contact-form" action="/api/verify" method="POST">
   {
     inputs &&
       inputs.map(
-        ({ type = 'text', name, label = '', autocomplete = 'on', placeholder = '' }) =>
+        ({
+          type = "text",
+          name,
+          label = "",
+          autocomplete = "on",
+          placeholder = "",
+        }) =>
           name && (
             <div class="mb-6">
               {label && (
@@ -26,7 +47,7 @@ const { inputs, textarea, disclaimer, button = 'Contact us', description = '' } 
                 class="py-3 px-4 block w-full text-md rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-900"
               />
             </div>
-          )
+          ),
       )
   }
 
@@ -38,7 +59,7 @@ const { inputs, textarea, disclaimer, button = 'Contact us', description = '' } 
         </label>
         <textarea
           id="textarea"
-          name={textarea.name ? textarea.name : 'message'}
+          name={textarea.name ? textarea.name : "message"}
           rows={textarea.rows ? textarea.rows : 4}
           placeholder={textarea.placeholder}
           class="py-3 px-4 block w-full text-md rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-900"
@@ -49,7 +70,7 @@ const { inputs, textarea, disclaimer, button = 'Contact us', description = '' } 
 
   {
     disclaimer && (
-      <div class="mt-3 flex items-start">
+      <div class="mt-3 mb-3 flex items-start">
         <div class="flex mt-0.5">
           <input
             id="disclaimer"
@@ -59,18 +80,21 @@ const { inputs, textarea, disclaimer, button = 'Contact us', description = '' } 
           />
         </div>
         <div class="ml-3">
-          <label for="disclaimer" class="cursor-pointer select-none text-sm text-gray-600 dark:text-gray-400">
+          <label
+            for="disclaimer"
+            class="cursor-pointer select-none text-sm text-gray-600 dark:text-gray-400"
+          >
             {disclaimer.label}
           </label>
         </div>
       </div>
     )
   }
-
+  <div class="cf-turnstile" data-sitekey={cloudflareTurnstileSiteKey}></div>
   {
     button && (
       <div class="mt-10 grid">
-        <Button variant="primary" type="submit">
+        <Button id="send-message" variant="primary" type="submit">
           {button}
         </Button>
       </div>
@@ -85,3 +109,139 @@ const { inputs, textarea, disclaimer, button = 'Contact us', description = '' } 
     )
   }
 </form>
+<script>
+  declare global {
+    interface Window {
+      contactFormLink: string;
+    }
+  }
+</script>
+<script define:vars={{ contactFormLink }}>
+  window.contactFormLink = contactFormLink;
+</script>
+
+<script>
+  import SweetAlert2 from "sweetalert2";
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  const nameRegex = /^[A-Za-zÀ-ÿ0-9\s'\-.,;:()&]{1,100}$/;
+  const messageRegex =
+    /^(?=(?:[^a-zA-ZÀ-ÿ0-9]*[a-zA-ZÀ-ÿ0-9]+){15,})(?:[A-Za-zÀ-ÿ0-9\s'\-.,;:()&!?$%^#@_+={}\[\]<>~|/\r\n]*)$/;
+
+  const isValidEmail = (email: string) => emailRegex.test(email);
+  const isValidName = (name: string) => nameRegex.test(name);
+  const isValidMessage = (message: string) => messageRegex.test(message);
+
+  const showAlert = (title: string, text: string, type: string = "error") => {
+    SweetAlert2.fire({
+      title: title,
+      text: text,
+      icon: type === "error" ? "error" : "success",
+      confirmButtonText: "OK",
+    });
+  };
+  const contactForm = document.getElementById(
+    "contact-form",
+  ) as HTMLFormElement;
+  if (contactForm) {
+    const clearContactForm = () => {
+      const inputs = contactForm.querySelectorAll("input, textarea");
+
+      // Loop through each input field and reset its value
+      inputs.forEach((input) => {
+        // Narrow the type of 'input' to HTMLInputElement or HTMLTextAreaElement
+        if (input instanceof HTMLInputElement) {
+          // If it's a checkbox or radio button, clear the 'checked' property
+          if (input.type === "checkbox" || input.type === "radio") {
+            input.checked = false; // Deselect checkboxes and radio buttons
+          } else {
+            input.value = ""; // Clear text inputs
+          }
+        } else if (input instanceof HTMLTextAreaElement) {
+          // If it's a textarea, clear the value
+          input.value = "";
+        }
+      });
+    };
+    contactForm.addEventListener("submit", async function (event) {
+      const turnstile = document.querySelector(
+        'input[name="cf-turnstile-response"]',
+      );
+      if (turnstile) {
+        const turnstileToken = turnstile.value;
+        if (!turnstileToken) {
+          event.preventDefault();
+          showAlert("CAPTCHA", "Please complete the CAPTCHA.");
+        } else {
+          event.preventDefault(); // Prevent default form submission
+
+          const formData = new FormData(this);
+
+          const data = {
+            name: "",
+            email: "",
+            message: "",
+            disclaimer: null,
+            token: "",
+          };
+          data.token = turnstileToken;
+
+          formData.forEach((value, key) => {
+            data[key] = value;
+          });
+
+          // Get form data
+          if (!isValidName(data.name)) {
+            showAlert("Name Required", "Please enter a valid name.");
+            return;
+          }
+          if (!isValidEmail(data.email)) {
+            showAlert("Email Required", "Please enter a valid Email");
+            return;
+          }
+          if (!isValidMessage(data.message)) {
+            showAlert(
+              "Message Required",
+              "Please enter your message. (at least 5 words)",
+            );
+            return;
+          }
+
+          if (data && data.disclaimer && data.disclaimer === "on") {
+            // Send POST request
+            try {
+              const response = await fetch(window.contactFormLink, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+              });
+
+              const result = await response.json();
+
+              // Optionally, you can display a success message or handle the response
+              if (result && result.status === 200) {
+                clearContactForm();
+                showAlert(
+                  "Thank You!",
+                  "Your Message Successfully Sent.",
+                  "success",
+                );
+              } else {
+                showAlert(
+                  "Oops!",
+                  "Sorry for Inconvenience. An Error happened in the server, while sending your message.",
+                );
+              }
+            } catch (error) {
+              console.error("Error:", error);
+            }
+          } else {
+            // alert("You must agree to the Disclaimer.");
+            showAlert("Disclaimer", "You must agree to the Disclaimer.");
+          }
+        }
+      }
+    });
+  }
+</script>

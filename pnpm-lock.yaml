@@ -38,6 +38,9 @@ importers:
       lodash.merge:
         specifier: ^4.6.2
         version: 4.6.2
+      sweetalert2:
+        specifier: ^11.15.0
+        version: 11.15.0
       unpic:
         specifier: ^3.18.0
         version: 3.20.0
@@ -2916,6 +2919,9 @@ packages:
     resolution: {integrity: sha512-OoohrmuUlBs8B8o6MB2Aevn+pRIH9zDALSR+6hhqVfa6fRwG/Qw9VUMSMW9VNg2CFc/MTIfabtdOVl9ODIJjpw==}
     engines: {node: '>=14.0.0'}
     hasBin: true
+
+  sweetalert2@11.15.0:
+    resolution: {integrity: sha512-34Xs0CFBac6I1cGG9d+XaBqJrp0F/0prr8rMYOcU0shU/XmkGkRtlCxWNi7PdKYGw9Qf6aoEHNYicX3au37nkw==}
 
   synckit@0.9.2:
     resolution: {integrity: sha512-vrozgXDQwYO72vHjUb/HnFbQx1exDjoKzqx23aXEg2a9VIg2TSFZ8FmeZpTjUCFMYw7mpX4BE2SFu8wI7asYsw==}
@@ -6792,6 +6798,8 @@ snapshots:
       css-what: 6.1.0
       csso: 5.0.5
       picocolors: 1.1.1
+
+  sweetalert2@11.15.0: {}
 
   synckit@0.9.2:
     dependencies:

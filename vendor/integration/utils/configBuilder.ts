@@ -5,6 +5,7 @@ import type { MetaData } from '~/types';
 export type Config = {
   site?: SiteConfig;
   metadata?: MetaDataConfig;
+  backend: BackendConfig,
   i18n?: I18NConfig;
   apps?: {
     blog?: AppBlogConfig;
@@ -20,6 +21,11 @@ export interface SiteConfig {
   trailingSlash?: boolean;
   googleSiteVerificationId?: string;
 }
+export interface BackendConfig {
+  contactFormLink: string,
+  cloudflareTurnstileSiteKey: string
+}
+
 export interface MetaDataConfig extends Omit<MetaData, 'title'> {
   title?: {
     default: string;
@@ -129,6 +135,17 @@ const getI18N = (config: Config) => {
   return value as I18NConfig;
 };
 
+const getBackend = (config: Config) => {
+  const _default = {
+    contactFormLink: "",
+    cloudflareTurnstileSiteKey: ""
+  };
+
+  const value = merge({}, _default, config?.backend ?? {});
+
+  return value as BackendConfig;
+};
+
 const getAppBlog = (config: Config) => {
   const _default = {
     isEnabled: false,
@@ -196,6 +213,7 @@ const getAnalytics = (config: Config) => {
 export default (config: Config) => ({
   SITE: getSite(config),
   I18N: getI18N(config),
+  BACKEND: getBackend(config),
   METADATA: getMetadata(config),
   APP_BLOG: getAppBlog(config),
   UI: getUI(config),
