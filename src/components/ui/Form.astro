@@ -130,15 +130,56 @@ const cloudflareTurnstileSiteKey = BACKEND.cloudflareTurnstileSiteKey;
   const isValidEmail = (email: string) => emailRegex.test(email);
   const isValidName = (name: string) => nameRegex.test(name);
   const isValidMessage = (message: string) => messageRegex.test(message);
-
-  const showAlert = (title: string, text: string, type: string = "error") => {
-    SweetAlert2.fire({
-      title: title,
-      text: text,
-      icon: type === "error" ? "error" : "success",
-      confirmButtonText: "OK",
-    });
+  const showAlert = (options) => {
+    return SweetAlert2.fire(options);
   };
+  const successMessage = (msg: string) => {
+    return {
+      title: "Success",
+      text: msg,
+      timer: 2000,
+      icon: "success",
+      confirmButtonColor: "#cf7119",
+    };
+  };
+
+  const errorMessage = (title = "Error", msg: string) => {
+    return {
+      title: title,
+      text: msg,
+      icon: "error",
+      confirmButtonColor: "#cf7119",
+    };
+  };
+  const showLoading = (title: string, msg: string) => {
+    return {
+      title: title,
+      text: msg,
+      didOpen: () => {
+        SweetAlert2.showLoading();
+      },
+    };
+  };
+
+  const closeLoading = () => {
+    // ToDo: need to fix this
+    // if the close happends before it is in a loading state
+    return {
+      didOpen: () => {
+        SweetAlert2.close();
+      },
+    };
+  };
+
+  // const showAlert = (title: string, text: string, type: string = "error") => {
+  //   SweetAlert2.fire({
+  //     title: title,
+  //     text: text,
+  //     icon: type === "error" ? "error" : "success",
+  //     confirmButtonText: "OK",
+  //   });
+  // };
+
   const contactForm = document.getElementById(
     "contact-form",
   ) as HTMLFormElement;
@@ -170,7 +211,7 @@ const cloudflareTurnstileSiteKey = BACKEND.cloudflareTurnstileSiteKey;
         const turnstileToken = turnstile.value;
         if (!turnstileToken) {
           event.preventDefault();
-          showAlert("CAPTCHA", "Please complete the CAPTCHA.");
+          showAlert(errorMessage("CAPTCHA", "Please complete the CAPTCHA."));
         } else {
           event.preventDefault(); // Prevent default form submission
 
@@ -191,17 +232,23 @@ const cloudflareTurnstileSiteKey = BACKEND.cloudflareTurnstileSiteKey;
 
           // Get form data
           if (!isValidName(data.name)) {
-            showAlert("Name Required", "Please enter a valid name.");
+            showAlert(
+              errorMessage("Name Required", "Please enter a valid name."),
+            );
             return;
           }
           if (!isValidEmail(data.email)) {
-            showAlert("Email Required", "Please enter a valid Email");
+            showAlert(
+              errorMessage("Email Required", "Please enter a valid Email"),
+            );
             return;
           }
           if (!isValidMessage(data.message)) {
             showAlert(
-              "Message Required",
-              "Please enter your message. (at least 5 words)",
+              errorMessage(
+                "Message Required",
+                "Please enter your message. (at least 5 words)",
+              ),
             );
             return;
           }
@@ -216,29 +263,50 @@ const cloudflareTurnstileSiteKey = BACKEND.cloudflareTurnstileSiteKey;
                 },
                 body: JSON.stringify(data),
               });
+              showAlert(
+                showLoading(
+                  "Your message is on its way",
+                  "Processing... Your message will be sent shortly.",
+                ),
+              );
 
               const result = await response.json();
 
               // Optionally, you can display a success message or handle the response
               if (result && result.status === 200) {
                 clearContactForm();
+
                 showAlert(
-                  "Thank You!",
-                  "Your Message Successfully Sent.",
-                  "success",
-                );
+                  successMessage(
+                    "Message successfully sent! Thank you for contacting us.",
+                  ),
+                ).then((_) => {
+                  showAlert(closeLoading());
+                  window.location.href = "/";
+                });
               } else {
                 showAlert(
-                  "Oops!",
-                  "Sorry for Inconvenience. An Error happened in the server, while sending your message.",
-                );
+                  errorMessage(
+                    "Oops!",
+                    "Sorry for Inconvenience. Something went wrong. We couldn’t send your message",
+                  ),
+                ).then((_) => {
+                  showAlert(closeLoading());
+                });
               }
             } catch (error) {
-              console.error("Error:", error);
+              showAlert(
+                errorMessage(
+                  "Oops!",
+                  "Sorry, we couldn't process your request. A Network related error occured.",
+                ),
+              );
             }
           } else {
             // alert("You must agree to the Disclaimer.");
-            showAlert("Disclaimer", "You must agree to the Disclaimer.");
+            showAlert(
+              errorMessage("Disclaimer", "You must agree to the Disclaimer."),
+            );
           }
         }
       }
