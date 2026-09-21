@@ -11,8 +11,8 @@ export const headerData = {
   ],
   actions: [
     {
-      text: "Hire me",
-      href: "#",
+      text: "Contact",
+      href: getPermalink("/contact#form"),
     },
   ],
 };
@@ -69,15 +69,18 @@ export const footerData = {
     // { text: 'Privacy Policy', href: getPermalink('/privacy') },
   ],
   socialLinks: [
-    { ariaLabel: "X", icon: "tabler:brand-x", href: "https://x.com/SeddiqSorush" },
-    { ariaLabel: "Instagram", icon: "tabler:brand-instagram", href: "https://www.instagram.com/podcoder" },
-    { ariaLabel: "Facebook", icon: "tabler:brand-facebook", href: "https://www.facebook.com/seddiq.sorush" },
-    { ariaLabel: "RSS", icon: "tabler:rss", href: getAsset("/rss.xml") },
+    {
+      ariaLabel: "LinkedIn",
+      icon: "tabler:brand-linkedin",
+      href: "https://www.linkedin.com/in/seddiqsorush",
+    },
     {
       ariaLabel: "Github",
       icon: "tabler:brand-github",
       href: "https://github.com/podcoder",
     },
+    { ariaLabel: "X", icon: "tabler:brand-x", href: "https://x.com/SeddiqSorush" },
+    { ariaLabel: "RSS", icon: "tabler:rss", href: getAsset("/rss.xml") },
   ],
   footNote: `
    &copy; ${new Date().getFullYear()}· All rights reserved.
