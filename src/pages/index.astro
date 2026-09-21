@@ -4,13 +4,11 @@ import Layout from "~/layouts/PageLayout.astro";
 import Header from "~/components/widgets/Header.astro";
 import Hero from "~/components/widgets/Hero.astro";
 import Content from "~/components/widgets/Content.astro";
-import CallToAction from "~/components/widgets/CallToAction.astro";
-import Features3 from "~/components/widgets/Features3.astro";
-import Testimonials from "~/components/widgets/Testimonials.astro";
+import Experience from "~/components/widgets/Experience.astro";
 import Steps from "~/components/widgets/Steps.astro";
+import Features3 from "~/components/widgets/Features3.astro";
 import BlogLatestPosts from "~/components/widgets/BlogLatestPosts.astro";
 import { getPermalink } from "~/utils/permalinks";
-// import { inferRemoteSize } from "astro:assets";
 
 import MyPhoto from "~/assets/images/my-photo.png";
 
@@ -27,31 +25,46 @@ const metadata = {
     <Header {...headerData} isSticky showToggleTheme />
   </Fragment>
 
-  <!-- Hero2 Widget ******************* -->
+  <!-- Hero Widget ******************* -->
 
   <Hero
     id="hero"
     title="Seddiq Sorush"
-    tagline="Senior Software Engineer"
+    tagline="Senior Software Engineer — Full-Stack &amp; Distributed Systems"
     actions={[
       {
         variant: "primary",
-        text: "Hire me",
+        text: "Contact",
         href: getPermalink("/contact#form"),
+      },
+      {
+        variant: "secondary",
+        text: "Résumé",
+        href: "/resume.pdf",
+        target: "_blank",
+      },
+      {
+        variant: "secondary",
+        text: "GitHub",
+        href: "https://github.com/podcoder",
+        target: "_blank",
+      },
+      {
+        variant: "secondary",
+        text: "LinkedIn",
+        href: "https://www.linkedin.com/in/seddiqsorush",
+        target: "_blank",
       },
     ]}
   >
     <Fragment slot="subtitle">
-      I’m a Senior Software Engineer with a passion for building scalable,
-      high-performance systems. <br />
-      With over 10 years of experience and a Bachelor of Technology in Electronics
-      Engineering, I specialize in crafting innovative software solutions. I thrive
-      on solving complex problems and optimizing systems, leveraging my deep technical
-      expertise to create impactful, future-proof software.
+      I build and modernize the systems people depend on — retirement and benefits
+      platforms, clinical records, national identity systems, and high-traffic
+      e-commerce. San Francisco Bay Area · 12+ years of experience.
     </Fragment>
   </Hero>
 
-  <!-- Content Widget **************** -->
+  <!-- Content Widget: About **************** -->
 
   <Content
     id="about"
@@ -62,7 +75,7 @@ const metadata = {
         callToAction: {
           target: "_blank",
           text: "LinkedIn",
-          href: "#",
+          href: "https://www.linkedin.com/in/seddiqsorush",
         },
       },
       {
@@ -70,15 +83,14 @@ const metadata = {
         callToAction: {
           target: "_blank",
           text: "Github",
-          href: "#",
+          href: "https://github.com/podcoder",
         },
       },
       {
-        icon: "tabler:brand-gmail",
+        icon: "tabler:mail",
         callToAction: {
-          target: "_blank",
-          text: "Gmail",
-          href: "#",
+          text: "Email",
+          href: "mailto:seddiq.sorush@gmail.com",
         },
       },
     ]}
@@ -89,30 +101,31 @@ const metadata = {
     }}
   >
     <Fragment slot="content">
-      <h2
-        class="text-2xl font-bold tracking-tight dark:text-white sm:text-3xl mb-2"
-      >
+      <h2 class="text-2xl font-bold tracking-tight dark:text-white sm:text-3xl mb-2">
         About me
       </h2>
       <p>
-        Welcome to my professional journey. With over a decade of experience in
-        software engineering, I'm passionate about transforming ideas into
-        scalable, impactful solutions. Each line of code I write is crafted with
-        precision and purpose, building the foundation for innovative
-        applications that meet the needs of today's fast-paced digital world.
+        I'm a senior software engineer with 12+ years building and modernizing
+        systems that people rely on but rarely think about. My work spans
+        public-sector, healthcare, and commercial software — a county retirement
+        system, a US healthcare EHR, national identity and passport systems, and
+        high-traffic e-commerce.
       </p>
       <br />
       <p>
-        I draw inspiration from various technologies and methodologies,
-        continuously evolving to stay at the forefront of industry advancements.
-        Whether developing robust APIs, designing intuitive user interfaces, or
-        leveraging the power of cloud platforms and modern frameworks, my work
-        reflects a commitment to excellence and constant growth.
+        I work across the stack — Java, C#/.NET, React, and Node — with a focus
+        on distributed architecture (microservices, Apache Kafka, PostgreSQL) and
+        the interfaces that surface it. I like the unglamorous parts that make
+        software trustworthy: data migration, reconciliation, authentication, and
+        reliability. I've led teams of 4 to 10, and I still write production
+        code.
       </p>
       <br />
       <p>
-        If you're interested in collaborating or learning more about my work,
-        feel free to contact me at :
+        Right now I'm deepening my work in AI — completing an AI Engineering
+        credential and studying generative AI — because I think the engineers
+        who stay valuable are the ones who learn to build with these tools. I
+        also teach data structures and algorithms as an adjunct instructor.
       </p>
     </Fragment>
 
@@ -121,293 +134,97 @@ const metadata = {
     </Fragment>
   </Content>
 
-  <!-- Steps Widget ****************** -->
+  <!-- Experience Widget ****************** -->
+
+  <Experience id="resume" title="Work experience" items={experiences} />
+
+  <!-- Steps Widget: Education ****************** -->
 
   <Steps
-    id="resume"
-    title="Work experience"
-    items={experiences}
-    classes={{ container: "max-w-3xl" }}
-  />
-
-  <!-- Steps Widget ****************** -->
-
-  <Steps
-    id="resume"
+    id="education"
     title="Education"
     items={[
       {
-        title: `Bachelor of Technology (Electronics Engineering) <br /> <span class="font-normal">Pune University</span> <br /> <span class="text-sm font-normal">2012 - 2016</span>`,
+        title: `Bachelor of Technology, Electronics Engineering <br /> <span class="font-normal">Savitribai Phule Pune University</span> <br /> <span class="text-sm font-normal">2012 – 2016 · First Class</span>`,
         icon: "tabler:school",
       },
-      // {
-      //   title: `Bachelor of Arts in Graphic Design <br /> <span class="font-normal">New York University's School of Design</span> <br /> <span class="text-sm font-normal">2014 - 2018</span>`,
-      //   icon: 'tabler:school',
-      // },
     ]}
     classes={{ container: "max-w-3xl" }}
   />
 
-  <!-- Features3 Widget ************** -->
+  <div class="max-w-3xl mx-auto px-4 md:px-6 -mt-8 md:-mt-12 pb-12 md:pb-16">
+    <p class="text-sm text-muted rounded-lg border border-gray-200 dark:border-slate-800 px-4 py-3">
+      <span class="font-semibold text-default">Currently in progress:</span>
+      AI Engineering with Claude — Udacity, and Generative AI — Udacity.
+    </p>
+  </div>
+
+  <!-- Features3 Widget: Skills ************** -->
 
   <Features3
+    id="skills"
     title="Skills"
-    subtitle="Discover how my technical skills turn visionary concepts into fully-functional applications."
+    subtitle="Technologies I use across the stack, grouped by where they fit."
+    columns={2}
+    defaultIcon="tabler:point-filled"
+    items={[
+      {
+        title: "Languages",
+        description: "Java, C# / .NET, Python, TypeScript / JavaScript, Kotlin, SQL",
+      },
+      {
+        title: "Front-End",
+        description: "React, Angular, Vue, LitElement, micro-frontends, HTML/CSS, Tailwind",
+      },
+      {
+        title: "Backend & Data",
+        description:
+          "Spring Boot, Node/Express, microservices, REST/GraphQL, Apache Kafka; PostgreSQL, MS SQL Server, MongoDB, Redis, Oracle",
+      },
+      {
+        title: "Cloud & DevOps",
+        description: "AWS, Azure, GCP, Docker, Kubernetes, Jenkins, CI/CD, Azure DevOps, monitoring & observability, Git",
+      },
+      {
+        title: "Security",
+        description: "OAuth 2.0, OpenID Connect, Keycloak, role-based access control",
+      },
+    ]}
+  />
+
+  <!-- Features3 Widget: Projects ************** -->
+
+  <Features3
+    id="projects"
+    title="Selected projects"
+    subtitle="A few systems I built end-to-end."
     columns={3}
     defaultIcon="tabler:point-filled"
     items={[
       {
-        title: "Backend Development",
+        title: "National Online Passport System",
         description:
-          "Expert in designing and implementing robust backend systems, including databases and APIs.",
+          "High-volume public-sector system for Afghanistan, serving 10,000+ daily users. C#, ASP.NET, SQL Server.",
       },
       {
-        title: "Frontend Development",
+        title: "MIDAS / SHURA",
         description:
-          "Proficient in creating dynamic, responsive user interfaces using modern frameworks and technologies.",
+          "Biometric identity & registration platforms for the International Organization for Migration (UN), built offline-first. .NET Core, Vue, React, Kafka.",
       },
       {
-        title: "API Integration",
+        title: "ZootZoot",
         description:
-          "Skilled at integrating third-party services and creating custom APIs for seamless data flow.",
-      },
-      {
-        title: "Cloud Architecture",
-        description:
-          "Experienced in building scalable and secure cloud-based solutions using AWS, Azure, or Google Cloud.",
-      },
-      {
-        title: "DevOps & CI/CD",
-        description:
-          "Adept in implementing automated pipelines for continuous integration, testing, and deployment.",
-      },
-      {
-        title: "Database Management",
-        description:
-          "Proficient in designing, managing, and optimizing both SQL and NoSQL databases for performance and scalability.",
-      },
-      {
-        title: "Version Control",
-        description:
-          "Skilled in using Git for version control and managing collaborative development processes.",
-      },
-      {
-        title: "Cross-Platform Development",
-        description:
-          "Experienced in developing applications that work seamlessly across different platforms, including web and mobile.",
-      },
-      {
-        title: "Agile Methodologies",
-        description:
-          "Experienced in working within Agile teams, utilizing Scrum and Kanban frameworks for efficient project delivery.",
-      },
-      {
-        title: "Problem Solving",
-        description:
-          "Diligent in identifying complex issues and applying creative, efficient solutions in development.",
+          "Cross-platform food/grocery delivery marketplace app. Vue, React Native, Laravel, Firebase.",
       },
     ]}
   />
-
-  <!-- Content Widget **************** -->
-
-  <!-- <Content
-    id="porfolio"
-    title="Elevating visual narratives"
-    subtitle="Embark on a design journey that surpasses pixels, entering a realm of imagination. Explore my portfolio, where passion and creativity converge to shape enthralling visual narratives."
-    isReversed
-    items={[
-      {
-        title: 'Description:',
-        description:
-          'Developed a comprehensive brand identity for a tech startup, Tech Innovators, specializing in disruptive innovations. The goal was to convey a modern yet approachable image that resonated with both corporate clients and tech enthusiasts.',
-      },
-      {
-        title: 'Role:',
-        description:
-          'Led the entire branding process from concept to execution. Created a dynamic logo that symbolized innovation, selected a vibrant color palette, and I designed corporate stationery, website graphics, and social media assets.',
-      },
-    ]}
-    image={{
-      src: 'https://images.unsplash.com/photo-1658248165252-71e116af1b34?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=928&q=80',
-      alt: 'Tech Design Image',
-    }}
-    callToAction={{
-      target: '_blank',
-      text: 'Go to the project',
-      icon: 'tabler:chevron-right',
-      href: '#',
-    }}
-  >
-    <Fragment slot="content">
-      <h3 class="text-2xl font-bold tracking-tight dark:text-white sm:text-3xl mb-2">
-        Project 1: <br /><span class="text-2xl">Brand identity for tech innovators</span>
-      </h3>
-    </Fragment>
-
-    <Fragment slot="bg">
-      <div class="absolute inset-0 bg-blue-50 dark:bg-transparent"></div>
-    </Fragment>
-  </Content> -->
-
-  <!-- Content Widget **************** -->
-
-  <!-- <Content
-    isReversed
-    isAfterContent={true}
-    items={[
-      {
-        title: 'Description:',
-        description:
-          'Designed a captivating event poster for an art and music festival, "ArtWave Fusion," aiming to showcase the synergy between visual art and music genres.',
-      },
-      {
-        title: 'Role:',
-        description: `Translated the festival's creative theme into a visually striking poster. Used bold typography, vibrant colors, and abstract elements to depict the fusion of art and music. Ensured the design captured the festival's vibrant atmosphere.`,
-      },
-    ]}
-    image={{
-      src: 'https://images.unsplash.com/photo-1619983081563-430f63602796?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80',
-      alt: 'Art and Music Poster Image',
-    }}
-    callToAction={{
-      target: '_blank',
-      text: 'Go to the project',
-      icon: 'tabler:chevron-right',
-      href: '#',
-    }}
-  >
-    <Fragment slot="content">
-      <h3 class="text-2xl font-bold tracking-tight dark:text-white sm:text-3xl mb-2">
-        Project 2: <br /><span class="text-2xl">Event poster for art & music festival</span>
-      </h3>
-    </Fragment>
-
-    <Fragment slot="bg">
-      <div class="absolute inset-0 bg-blue-50 dark:bg-transparent"></div>
-    </Fragment>
-  </Content> -->
-
-  <!-- Content Widget **************** -->
-
-  <!-- <Content
-    isReversed
-    isAfterContent={true}
-    items={[
-      {
-        title: 'Description:',
-        description: `Redesigned the e-commerce website for an eco-conscious fashion brand, GreenVogue. The objective was to align the brand's online presence with its sustainable ethos and improve user experience.`,
-      },
-      {
-        title: 'Role:',
-        description: `Conducted a thorough analysis of the brand's values and customer base to inform the design direction. Created a visually appealing interface with intuitive navigation, highlighting sustainable materials, and integrating a user-friendly shopping experience.`,
-      },
-    ]}
-    image={{
-      src: 'https://plus.unsplash.com/premium_photo-1683288295841-782fa47e4770?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80',
-      alt: 'Fashion e-commerce Image',
-    }}
-    callToAction={{
-      target: '_blank',
-      text: 'Go to the project',
-      icon: 'tabler:chevron-right',
-      href: '#',
-    }}
-  >
-    <Fragment slot="content">
-      <h3 class="text-2xl font-bold tracking-tight dark:text-white sm:text-3xl mb-2">
-        Project 3: <br /><span class="text-2xl">E-commerce website redesign for fashion brand</span>
-      </h3>
-    </Fragment>
-
-    <Fragment slot="bg">
-      <div class="absolute inset-0 bg-blue-50 dark:bg-transparent"></div>
-    </Fragment>
-  </Content> -->
-
-  <!-- Testimonials Widget *********** -->
-
-  <!-- <Testimonials
-    title="Client testimonials"
-    subtitle="Discover what clients have to say about their experiences working with me."
-    testimonials={[
-      {
-        testimonial: `She took our vague concept and turned it into a visual masterpiece that perfectly aligned with our goals. Her attention to detail and ability to translate ideas into compelling visuals exceeded our expectations.`,
-        name: 'Mark Thompson',
-        job: 'Creative director',
-        image: {
-          src: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80',
-          alt: 'Mark Thompson Image',
-        },
-      },
-      {
-        testimonial: `She transformed our brand identity with her creative finesse, capturing our essence in every element. Her dedication and talent truly shine through her work.`,
-        name: 'Emily Martinez',
-        job: 'CEO',
-        image: {
-          src: 'https://images.unsplash.com/photo-1554151228-14d9def656e4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=772&q=80',
-          alt: 'Emily Martinez Image',
-        },
-      },
-      {
-        testimonial: `She has an uncanny ability to communicate emotions and stories. She crafted a logo for our NGO that not only represents our cause but also evokes empathy. Her professionalism and commitment make her a designer of exceptional caliber.`,
-        name: 'Laura Simmons',
-        job: 'Founder of an NGO',
-        image: {
-          src: 'https://images.unsplash.com/photo-1554727242-741c14fa561c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80',
-          alt: 'Laura Simmons Image',
-        },
-      },
-      {
-        testimonial: `We entrusted Sarah with revamping our website's user interface, and the results were astounding. Her intuitive design sense enhanced user experience, leading to a significant increase in engagement. She's a designer who truly understands the synergy of aesthetics and functionality.`,
-        name: 'Alex Foster',
-        job: 'Director of web services',
-        image: {
-          src: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80',
-          alt: 'Alex Foster Image',
-        },
-      },
-      {
-        testimonial: `She took our vision and elevated it beyond imagination. Her ability to capture brand essence and translate it into design is nothing short of remarkable. Working with her has been an inspiring journey.`,
-        name: 'Jessica Collins',
-        job: 'Product Manager',
-        image: {
-          src: 'https://images.unsplash.com/photo-1548142813-c348350df52b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=778&q=80',
-          alt: 'Jessica Collins Image',
-        },
-      },
-      {
-        testimonial: `Her ability to transform concepts into captivating visuals is nothing short of extraordinary. She took our event poster idea and turned it into a visual masterpiece that perfectly captured the essence of our festival. Sarah's dedication, creativity, and knack for delivering beyond expectations make her an invaluable asset to any project.`,
-        name: 'Michael Carter',
-        job: 'Event Coordinator',
-        image: {
-          src: 'https://images.unsplash.com/photo-1566492031773-4f4e44671857?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80',
-          alt: 'Michael Carter Image',
-        },
-      },
-    ]}
-  /> -->
-
-  <!-- CallToAction Widget *********** -->
-
-  <!-- <CallToAction
-    title="Let's create together"
-    subtitle="Ready to transform your vision into captivating designs?"
-    actions={[
-      {
-        variant: 'primary',
-        text: 'Hire me',
-        href: '/',
-      },
-    ]}
-  /> -->
 
   <!-- BlogLatestPost Widget **************** -->
 
   <BlogLatestPosts
     id="blog"
-    title="Explore my insightful articles on my blog"
-    information={`Unlock real-world insights and practical lessons from hands-on experience, with valuable strategies and proven approaches to tackle challenges and drive success.`}
+    title="Writing"
+    information={`Notes from hands-on engineering work.`}
   >
     <Fragment slot="bg">
       <div class="absolute inset-0 bg-blue-50 dark:bg-transparent"></div>

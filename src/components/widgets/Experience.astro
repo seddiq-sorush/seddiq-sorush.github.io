@@ -1,0 +1,81 @@
+---
+import { Icon } from 'astro-icon/components';
+import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
+import Headline from '~/components/ui/Headline.astro';
+
+export interface ExperienceItem {
+  title: string;
+  company: string;
+  location: string;
+  dates: string;
+  bullets?: string[];
+  icon?: string;
+}
+
+export interface Props {
+  id?: string;
+  title?: string;
+  subtitle?: string;
+  tagline?: string;
+  items: ExperienceItem[];
+  isDark?: boolean;
+  defaultIcon?: string;
+  classes?: Record<string, string>;
+}
+
+const {
+  id,
+  title,
+  subtitle,
+  tagline,
+  items = [],
+  isDark = false,
+  defaultIcon = 'tabler:briefcase',
+  classes = {},
+} = Astro.props;
+---
+
+<WidgetWrapper id={id} isDark={isDark} containerClass={`max-w-3xl ${classes?.container ?? ''}`}>
+  <Headline
+    title={title}
+    subtitle={subtitle}
+    tagline={tagline}
+    classes={{ container: 'text-left rtl:text-right', title: 'text-3xl lg:text-4xl' }}
+  />
+  <div>
+    {
+      items.map(({ title: role, company, location, dates, bullets = [], icon }, index) => (
+        <div class="flex intersect-once intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade">
+          <div class="flex flex-col items-center mr-4 rtl:mr-0 rtl:ml-4">
+            <div class="flex items-center justify-center">
+              <Icon
+                name={icon || defaultIcon}
+                class="w-10 h-10 p-2 rounded-full border-2 text-primary dark:text-slate-200 border-primary dark:border-blue-700"
+              />
+            </div>
+            {index !== items.length - 1 && <div class="w-px h-full bg-black/10 dark:bg-slate-400/50" />}
+          </div>
+          <div class:list={['pt-1', index !== items.length - 1 ? 'pb-8' : '']}>
+            <div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-0.5">
+              <div>
+                <p class="text-xl font-bold text-heading">{role}</p>
+                <p class="text-muted">
+                  {company}
+                  {location && ` — ${location}`}
+                </p>
+              </div>
+              {dates && <p class="shrink-0 text-sm font-medium text-muted whitespace-nowrap">{dates}</p>}
+            </div>
+            {bullets.length > 0 && (
+              <ul class="mt-3 list-disc list-outside space-y-1.5 pl-5 text-muted">
+                {bullets.map((bullet) => (
+                  <li set:html={bullet} />
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</WidgetWrapper>
