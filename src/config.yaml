@@ -14,20 +14,20 @@ metadata:
   title:
     default: Seddiq Sorush
     template: "%s — Seddiq Sorush"
-  description: "\U0001F680 a Senior Software Engineer with a passion for building scalable, high-performance systems.."
+  description: "Senior Software Engineer (12+ years) building and modernizing systems people depend on — retirement and benefits platforms, clinical records, national identity systems, and high-traffic e-commerce."
   robots:
     index: true
     follow: true
   openGraph:
     site_name: Seddiq Sorush
     images:
-      - url: "~/assets/images/default.png"
-        width: 1200
-        height: 628
+      - url: "~/assets/images/my-photo.png"
+        width: 1287
+        height: 1515
     type: website
   twitter:
-    handle: "@p0dcoder"
-    site: "@p0dcoder"
+    handle: "@SeddiqSorush"
+    site: "@SeddiqSorush"
     cardType: summary_large_image
 
 i18n:
